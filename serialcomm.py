@@ -1,6 +1,20 @@
 from time import sleep
+import sys
 sys.path.append('/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages')
 from serial import Serial
+import threading
+from struct import pack
+
+def write(port):
+	print("writing to port")
+	i = 0
+	while True:
+		packed_data = pack('=B', i)
+		port.write(packed_data)
+		sleep(2)
+		i = i + 1
+		if (i == 10):
+			i = 0
 
 def read(port):
 	print("reading from port")
@@ -24,7 +38,7 @@ def main():
 	print("Connected!")
 
 	print("Running code...")
-	t1 = threading.Thread(target=test, args=(conn,))
+	t1 = threading.Thread(target=write, args=(conn,))
 	t2 = threading.Thread(target=read, args=(conn,))
 	
 	t1.start()
