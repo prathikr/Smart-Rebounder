@@ -7,8 +7,8 @@ void setup()
 
 void loop()
 {
-  if (Serial.available() > 0) {
-    char inByte = Serial.read();
+  if (Serial.available()) {
+    int inByte = (int)Serial.read();
     Serial.write(inByte);
   }
 }
