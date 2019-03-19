@@ -13,7 +13,7 @@ def connect():
     except IOError:
         print("Error opening serial port.")
         sys.exit(2)
-        
+
     return conn
 
 def largestArea(faces):
@@ -37,7 +37,12 @@ def largestArea(faces):
 def read(port):                     # For testing, reading arduino
     print("reading from port")
     while True:
+<<<<<<< HEAD
         line = port.read()         # read 1 byte
+=======
+
+        line = port.read(32)
+>>>>>>> c5468479d728b49f039940b49efb50109ddda223
         #temp = unpack('=i', line)
         if len(line) > 0:           # output
             l = ord(line[0])
@@ -47,10 +52,17 @@ print("Connecting...")
 #
 conn = connect()
 print("Connected!")
+<<<<<<< HEAD
         
 #print("Running code...")
 #t1 = threading.Thread(target=read, args=(conn,))
 #t1.start()
+=======
+
+print("Running code...")
+t1 = threading.Thread(target=read, args=(conn,))
+t1.start()
+>>>>>>> c5468479d728b49f039940b49efb50109ddda223
 
 cascPath = "haarcascade_frontalface_default.xml"
 #cascPath = "haarcascade_upperbody.xml"
@@ -90,21 +102,12 @@ while True:
     newx = largestArea(faces)
     change = newx - currentx
     cv2.putText(frame, "Delta : " + str(int(change)), (100,50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50,170,50), 2)
-    print(change)
-    
-    # if (change >= -128 and change <= 127):  # 1 byte range, can change for larger range
-    if(abs(change) < 200):
-        print(change)
-        packed_data = pack('=i', change)    # =b is 1 byte, can change for larger range
-        #print(type(packed_data))
-        #print("packed data: " + packed_data)
-        conn.write(packed_data)
-        #received = conn.read(4)
-        #unpack_data = unpack('=i', received)
-        #print("received data: ", unpack_data)
 
-        #conn.write(change)
-    
+    #print(change)
+    packed_data = pack('=i', change)
+    #print(packed_data)
+    conn.write(packed_data)
+
     currentx = newx
 
     # Display the resulting frame

@@ -22,11 +22,12 @@ void setup() {
   // Sets the two pins as Outputs
   Serial.begin(9600);
   delay(100);
-  pinMode(stepPin,OUTPUT); 
-  pinMode(dirPin,OUTPUT);
+  pinMode(stepPin, OUTPUT);
+  pinMode(dirPin, OUTPUT);
 }
-void loop() {
-  
+void loop()
+{
+
   read_distance();
    
 //  digitalWrite(dirPin,HIGH); // Enables the motor to move in a particular direction
@@ -55,7 +56,7 @@ void loop() {
     for(int i = 0; i < abs(a.val); i++) {
       digitalWrite(stepPin,HIGH);
       delayMicroseconds(500);
-      digitalWrite(stepPin,LOW);
+      digitalWrite(stepPin, LOW);
       delayMicroseconds(500);
     }
   } else {
