@@ -4,8 +4,11 @@ from serial import Serial
 import threading
 import time
 from struct import pack, unpack
+from lowpassfilter import lowpassfilter
 
 currentx = 0
+
+lpf = lowpassfilter(0.5)
 
 def connect():
     try:
@@ -17,7 +20,7 @@ def connect():
     return conn
 
 def largestArea(faces):
-    largestx = 0
+    largestx = 500
     largesty = 0
     largestw = 0
     largesth = 0
@@ -44,6 +47,7 @@ def read(port):                     # For testing, reading arduino
             l = ord(line[0])
             print(l)
 
+
 print("Connecting...")
 conn = connect()
 print("Connected!")
@@ -58,16 +62,17 @@ faceCascade = cv2.CascadeClassifier(cascPath)
 
 video_capture = cv2.VideoCapture(0)
 
-while True:
-    packed_data = pack('=i', int(200))
-    print("sending 200")
-    conn.write(packed_data)
-    time.sleep(2)
-    packed_data = pack('=i', int(-200))
-    print("sending -200")
-    conn.write(packed_data)
-    time.sleep(2)
+# while True:
+#     packed_data = pack('=i', int(200))
+#     print("sending 200")
+#     conn.write(packed_data)
+#     time.sleep(2)
+#     packed_data = pack('=i', int(-200))
+#     print("sending -200")
+#     conn.write(packed_data)
+#     time.sleep(2)
 
+currentTime = time.time()
 
 while True:
     # Capture frame-by-frame
@@ -88,12 +93,18 @@ while True:
     #     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
     newx = largestArea(faces)
-    change = newx - currentx
-    cv2.putText(frame, "Delta : " + str(int(change)), (100,50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50,170,50), 2)
+    filteredx = lpf.update(newx, time.time() - currentTime)
 
-    #print(change)
+    print(str(newx) + "\t" + str(filteredx))
+
+    newx = filteredx
+    change = newx - currentx
+    cv2.putText(frame, "Position: " + str(newx) + " Delta : " + str(int(change)), (100,50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50,170,50), 2)
+   
+
     packed_data = pack('=i', change)
     #print(packed_data)
+
     conn.write(packed_data)
 
     currentx = newx
@@ -105,6 +116,7 @@ while True:
         break
 
     time.sleep(0.25)
+    currentTime = time.time()
 
 # When everything is done, release the capture
 video_capture.release()
