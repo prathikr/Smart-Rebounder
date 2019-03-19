@@ -37,32 +37,20 @@ def largestArea(faces):
 def read(port):                     # For testing, reading arduino
     print("reading from port")
     while True:
-<<<<<<< HEAD
-        line = port.read()         # read 1 byte
-=======
 
         line = port.read(32)
->>>>>>> c5468479d728b49f039940b49efb50109ddda223
         #temp = unpack('=i', line)
         if len(line) > 0:           # output
             l = ord(line[0])
             print(l)
 
 print("Connecting...")
-#
 conn = connect()
 print("Connected!")
-<<<<<<< HEAD
         
 #print("Running code...")
 #t1 = threading.Thread(target=read, args=(conn,))
 #t1.start()
-=======
-
-print("Running code...")
-t1 = threading.Thread(target=read, args=(conn,))
-t1.start()
->>>>>>> c5468479d728b49f039940b49efb50109ddda223
 
 cascPath = "haarcascade_frontalface_default.xml"
 #cascPath = "haarcascade_upperbody.xml"
