@@ -115,7 +115,7 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-    time.sleep(0.25)
+    time.sleep(0.2)
     currentTime = time.time()
 
 # When everything is done, release the capture
