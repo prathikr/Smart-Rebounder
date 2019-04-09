@@ -35,7 +35,7 @@ def largestArea(faces):
             largesth = h
 
     cv2.rectangle(frame, (largestx, largesty), (largestx+largestw, largesty+largesth), (0, 255, 0), 2)
-    return largestx
+    return largestx + largestw / 2
 
 def read(port):                     # For testing, reading arduino
     print("reading from port")

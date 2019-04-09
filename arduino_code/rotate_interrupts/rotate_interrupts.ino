@@ -1,5 +1,10 @@
 const int stepPin = 3; 
 const int dirPin = 4; 
+const int pulseLen = 900;
+const int manualDelay = 600;
+const int rightPin = 11;
+const int leftPin = 12;
+
 
 union stuff{
   long val;
@@ -16,6 +21,8 @@ void setup() {
   delay(100);
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin, OUTPUT);
+  pinMode(rightPin, INPUT);
+  pinMode(leftPin, INPUT);
 }
 
 
@@ -23,21 +30,44 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   long diff = goal - current;
-  if(diff > 5) { // move right
+
+
+  if(diff > 5 ) { // move right, OR push button 
     digitalWrite(dirPin,LOW);
     digitalWrite(stepPin,HIGH);
-    delayMicroseconds(500);
+    delayMicroseconds(pulseLen);
     digitalWrite(stepPin,LOW);
-    delayMicroseconds(500);
+    delayMicroseconds(pulseLen);
     current += 1;
-  } else if (diff < -5) { // move left
+  } else if (diff < -5 ) { // move left OR push button
     digitalWrite(dirPin,HIGH);
     digitalWrite(stepPin,HIGH);
-    delayMicroseconds(500);
+    delayMicroseconds(pulseLen);
     digitalWrite(stepPin,LOW);
-    delayMicroseconds(500);
+    delayMicroseconds(pulseLen);
     current -= 1;
   }
+  else if(digitalRead(rightPin) == LOW && digitalRead(leftPin) != LOW){
+    digitalWrite(dirPin,HIGH);
+    
+    for(int x = 0; x < 100; x++){
+      digitalWrite(stepPin,HIGH);
+      delayMicroseconds(manualDelay);
+      digitalWrite(stepPin,LOW);
+      delayMicroseconds(manualDelay);
+    }
+  }
+  else if(digitalRead(leftPin) == LOW && digitalRead(rightPin) != LOW){
+    digitalWrite(dirPin,LOW);
+
+    for(int x = 0; x < 100; x++){
+      digitalWrite(stepPin,HIGH);
+      delayMicroseconds(manualDelay);
+      digitalWrite(stepPin,LOW);
+      delayMicroseconds(manualDelay);
+    }
+  }
+  
 }
 
 void serialEvent() {
