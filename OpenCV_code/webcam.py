@@ -7,9 +7,9 @@ from struct import pack, unpack
 from lowpassfilter import lowpassfilter
 
 currentx = 0
-
 lpf = lowpassfilter(0.5)
 
+#connect function
 def connect():
     try:
         conn = Serial('/dev/tty.usbmodem14201', baudrate=9600, dsrdtr=0, rtscts=0, timeout=1) #cu.usbmodemFA131
@@ -19,6 +19,7 @@ def connect():
 
     return conn
 
+#get square with largest area
 def largestArea(faces):
     largestx = 500
     largesty = 0
@@ -37,6 +38,12 @@ def largestArea(faces):
     cv2.rectangle(frame, (largestx, largesty), (largestx+largestw, largesty+largesth), (0, 255, 0), 2)
     return largestx + largestw / 2
 
+#translate delta to motor movement
+def createMotorMovement(delta):
+    delta = delta * 2
+    return pack('=i', delta)
+
+#read from serial port
 def read(port):                     # For testing, reading arduino
     print("reading from port")
     while True:
@@ -51,26 +58,11 @@ def read(port):                     # For testing, reading arduino
 print("Connecting...")
 conn = connect()
 print("Connected!")
-        
-#print("Running code...")
-#t1 = threading.Thread(target=read, args=(conn,))
-#t1.start()
 
 cascPath = "haarcascade_frontalface_default.xml"
-#cascPath = "haarcascade_upperbody.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 
 video_capture = cv2.VideoCapture(0)
-
-# while True:
-#     packed_data = pack('=i', int(200))
-#     print("sending 200")
-#     conn.write(packed_data)
-#     time.sleep(2)
-#     packed_data = pack('=i', int(-200))
-#     print("sending -200")
-#     conn.write(packed_data)
-#     time.sleep(2)
 
 currentTime = time.time()
 
@@ -88,10 +80,6 @@ while True:
         flags=cv2.CASCADE_SCALE_IMAGE
     )
 
-    # Draw a rectangle around the faces
-    # for (x, y, w, h) in faces:
-    #     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-
     newx = largestArea(faces)
     filteredx = lpf.update(newx, time.time() - currentTime)
 
@@ -102,9 +90,7 @@ while True:
     cv2.putText(frame, "Position: " + str(newx) + " Delta : " + str(int(change)), (100,50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50,170,50), 2)
    
 
-    packed_data = pack('=i', change)
-    #print(packed_data)
-
+    packed_data = createMotorMovement(change)
     conn.write(packed_data)
 
     currentx = newx
@@ -115,7 +101,7 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-    time.sleep(0.2)
+    #time.sleep(0.2)
     currentTime = time.time()
 
 # When everything is done, release the capture
