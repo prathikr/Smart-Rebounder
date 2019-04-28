@@ -1,5 +1,5 @@
-const int stepPin = 3; 
-const int dirPin = 4; 
+const int stepPin = A1; 
+const int dirPin = A0; 
 const int pulseLen = 900;
 const int manualDelay = 600;
 const int rightPin = 11;
@@ -21,33 +21,35 @@ void setup() {
   delay(100);
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin, OUTPUT);
-  pinMode(rightPin, INPUT);
-  pinMode(leftPin, INPUT);
+  pinMode(rightPin, INPUT_PULLUP); // Set as input with pull up resistor
+  pinMode(leftPin, INPUT_PULLUP);  // Set as input with pull up resistor
 }
 
 
 
 void loop() {
   // put your main code here, to run repeatedly:
-  long diff = goal - current;
+//  long diff = goal - current;
+//
+//  if(diff < 5 ) { // move right
+//    digitalWrite(dirPin,LOW);
+//    digitalWrite(stepPin,HIGH);
+//    delayMicroseconds(pulseLen);
+//    digitalWrite(stepPin,LOW);
+//    delayMicroseconds(pulseLen);
+//    current += 1;
+//  } 
+//  else if (diff < -5 ) { // move left 
+//    digitalWrite(dirPin,HIGH);
+//    digitalWrite(stepPin,HIGH);
+//    delayMicroseconds(pulseLen);
+//    digitalWrite(stepPin,LOW);
+//    delayMicroseconds(pulseLen);
+//    current -= 1;
+//  }
 
-
-  if(diff > 5 ) { // move right, OR push button 
-    digitalWrite(dirPin,LOW);
-    digitalWrite(stepPin,HIGH);
-    delayMicroseconds(pulseLen);
-    digitalWrite(stepPin,LOW);
-    delayMicroseconds(pulseLen);
-    current += 1;
-  } else if (diff < -5 ) { // move left OR push button
-    digitalWrite(dirPin,HIGH);
-    digitalWrite(stepPin,HIGH);
-    delayMicroseconds(pulseLen);
-    digitalWrite(stepPin,LOW);
-    delayMicroseconds(pulseLen);
-    current -= 1;
-  }
-  else if(digitalRead(rightPin) == LOW && digitalRead(leftPin) != LOW){
+  z1`
+  else if(digitalRead(rightPin) == LOW){ // move with push button
     digitalWrite(dirPin,HIGH);
     
     for(int x = 0; x < 100; x++){
@@ -57,7 +59,7 @@ void loop() {
       delayMicroseconds(manualDelay);
     }
   }
-  else if(digitalRead(leftPin) == LOW && digitalRead(rightPin) != LOW){
+  else if(digitalRead(leftPin) == LOW){ // move with push button
     digitalWrite(dirPin,LOW);
 
     for(int x = 0; x < 100; x++){

@@ -60,7 +60,7 @@ cascPath = "haarcascade_frontalface_default.xml"
 #cascPath = "haarcascade_upperbody.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 
-video_capture = cv2.VideoCapture(0)
+video_capture = cv2.VideoCapture(1)
 
 # while True:
 #     packed_data = pack('=i', int(200))
@@ -89,8 +89,8 @@ while True:
     )
 
     # Draw a rectangle around the faces
-    # for (x, y, w, h) in faces:
-    #     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+    #for (x, y, w, h) in faces:
+    #    cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
     newx = largestArea(faces)
     filteredx = lpf.update(newx, time.time() - currentTime)
