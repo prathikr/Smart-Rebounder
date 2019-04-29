@@ -3,13 +3,16 @@
 //#include <SR04.h>
 
 // defines pins numbers
-const int stepPin = 3; 
-const int dirPin = 4; 
+const int stepPin = A1; 
+const int dirPin = A0; 
 
 union stuff{
   long val;
   char buf[4];
 };
+
+long goal = 0;
+long curr = 0;
 
 //#include "SR04.h"                         //Values
 #define TRIG_PIN 12                       //for
@@ -26,30 +29,29 @@ void setup() {
 }
 void loop()
 {
-
   read_distance();
 
-  if (a.val > 0) {
+  if (goal - curr > 0) {
     digitalWrite(dirPin,LOW);
-    for(int i = 0; i < abs(a.val); i++) {
-      digitalWrite(stepPin,HIGH);
-      delayMicroseconds(500);
-      digitalWrite(stepPin, LOW);
-      delayMicroseconds(500);
-    }
-  } else {
+    digitalWrite(stepPin,HIGH);
+    delayMicroseconds(500);
+    digitalWrite(stepPin, LOW);
+    delayMicroseconds(500);
+    curr++;
+  } else if (goal - curr < 0) {
     digitalWrite(dirPin,HIGH);
-    for(int i = 0; i < abs(a.val); i++) {
-      digitalWrite(stepPin,HIGH);
-      delayMicroseconds(500);
-      digitalWrite(stepPin,LOW);
-      delayMicroseconds(500);
-    }
+    digitalWrite(stepPin,HIGH);
+    delayMicroseconds(500);
+    digitalWrite(stepPin,LOW);
+    delayMicroseconds(500);
+    curr--;
   }
 
 }
 
 void read_distance(void) {
-  while(Serial.available() == 0) {}
-  Serial.readBytes(a.buf, 4);
+  if(Serial.available() == 1) {
+    Serial.readBytes(a.buf, 4);
+    goal += a.val;  
+  }
 }

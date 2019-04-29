@@ -12,7 +12,7 @@ lpf = lowpassfilter(0.5)
 #connect function
 def connect():
     try:
-        conn = Serial('/dev/tty.usbmodem14201', baudrate=9600, dsrdtr=0, rtscts=0, timeout=1) #cu.usbmodemFA131
+        conn = Serial('/dev/cu.usbmodem14401', baudrate=9600, dsrdtr=0, rtscts=0, timeout=1) #cu.usbmodemFA131
     except IOError:
         print("Error opening serial port.")
         sys.exit(2)
@@ -40,7 +40,7 @@ def largestArea(faces):
 
 #translate delta to motor movement
 def createMotorMovement(delta):
-    delta = delta * 2
+    delta = delta * 1.5 * -1
     return pack('=i', delta)
 
 #read from serial port
@@ -62,7 +62,7 @@ print("Connected!")
 cascPath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 
-video_capture = cv2.VideoCapture(1)
+video_capture = cv2.VideoCapture(0)
 
 currentTime = time.time()
 
@@ -85,7 +85,7 @@ while True:
     #    cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
     newx = largestArea(faces)
-    filteredx = lpf.update(newx, time.time() - currentTime)
+    filteredx = newx #lpf.update(newx, time.time() - currentTime)
 
     print(str(newx) + "\t" + str(filteredx))
 
@@ -95,6 +95,7 @@ while True:
    
 
     packed_data = createMotorMovement(change)
+    #print(packed_data)
     conn.write(packed_data)
 
     currentx = newx

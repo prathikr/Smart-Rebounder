@@ -2,7 +2,7 @@ const int stepPin = A1;
 const int dirPin = A0; 
 const int pulseLen = 900;
 const int manualDelay = 600;
-const int rightPin = 11;
+const int rightPin = 10;
 const int leftPin = 12;
 
 
@@ -48,8 +48,7 @@ void loop() {
 //    current -= 1;
 //  }
 
-  z1`
-  else if(digitalRead(rightPin) == LOW){ // move with push button
+  if(digitalRead(rightPin) == LOW){ // move with push button
     digitalWrite(dirPin,HIGH);
     
     for(int x = 0; x < 100; x++){
@@ -75,6 +74,6 @@ void loop() {
 void serialEvent() {
   while (Serial.available()) {
     Serial.readBytes(received.buf, 4);
-    goal += received.val*2;
+    goal += received.val;
   }
 }
